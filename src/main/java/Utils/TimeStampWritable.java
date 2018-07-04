@@ -65,12 +65,9 @@ public class TimeStampWritable implements WritableComparable<TimeStampWritable> 
 
     @Override
     public String toString(){
-        int print_time = start_time;
-        if (start_time == 0)
-            print_time = 12;
         if (is_statistics)
             return mark;
         else
-            return String.format("02%d:00:00-02%d:00:00 ", print_time, print_time+1)+mark;
+            return String.format("%02d:00:00-%02d:00:00 ", start_time, start_time+1)+mark;
     }
 }

@@ -14,12 +14,17 @@ public class sccMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
 
     @Override
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-        parser = new LogEntryParser(value.toString());
-        String time = String.format("%02d", parser.getTimeSplits()[0]);
+        try {
+            parser = new LogEntryParser(value.toString());
+            String time = String.format("%02d", parser.getTimeSplits()[0]);
 
-        int stateCode = parser.getState_code();
+            int stateCode = parser.getState_code();
 
-        context.write(new Text(time+"#"+stateCode), one);
-        context.write(new Text("_#"+stateCode), one);
+            context.write(new Text(time + "#" + stateCode), one);
+            context.write(new Text("$#" + stateCode), one);
+
+        }catch (ArrayIndexOutOfBoundsException e){
+
+        }
     }
 }

@@ -17,13 +17,39 @@ public class LogEntryParser {
         ip = line.substring(0, line.indexOf(" "));
         time = line.substring(line.indexOf("["), line.indexOf("]")+1);
         String[] splits = line.split("\"");
-        http_request = splits[1];
-        line = splits[2];
-        splits = line.split(" ");
-        http_method = splits[1];
-        state_code = Integer.parseInt(splits[2]);
-        response_length = Integer.parseInt(splits[3]);
-        delay = Integer.parseInt(splits[4]);
+        if (splits.length == 3) {
+            http_request = splits[1];
+            line = splits[2];
+            splits = line.split(" ");
+            http_method = splits[1];
+            state_code = Integer.parseInt(splits[2]);
+            try {
+                response_length = Integer.parseInt(splits[3]);
+            }catch (NumberFormatException e){
+                response_length = 0;
+            }
+            delay = Integer.parseInt(splits[4]);
+        }
+        else if (splits.length == 2){
+            String[] buf = splits[1].split(" ");
+            int buf_length = buf.length;
+            StringBuilder builder = new StringBuilder();
+            builder.append(buf[0]);
+            for (int i = 1; i < buf_length-4; i++) {
+                builder.append(" "+buf[i]);
+            }
+            http_request = builder.toString();
+            http_method = buf[buf_length-4];
+            state_code = Integer.parseInt(buf[buf_length-3]);
+            try {
+                response_length = Integer.parseInt(buf[buf_length-2]);
+            }catch (NumberFormatException e){
+                response_length = 0;
+            }
+            delay = Integer.parseInt(buf[buf_length-1]);
+        }
+
+
     }
 
     public int[] getTimeSplits(){
@@ -38,6 +64,10 @@ public class LogEntryParser {
 
     public int getState_code() {
         return state_code;
+    }
+
+    public String getHttp_request() {
+        return http_request;
     }
 
     public static void main(String[] args) {

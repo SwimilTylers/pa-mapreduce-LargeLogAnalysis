@@ -20,7 +20,7 @@ public class sccReducer extends Reducer<Text, IntWritable, TimeStampWritable, Nu
 
         if (current_time != null && !current_time.equals(time)){
             StringBuilder stringBuilder = new StringBuilder();
-            if (!current_time.equals("_")){
+            if (!current_time.equals("$")){
                 stringBuilder.append(" 200:"+state_code_count[0]);
                 stringBuilder.append(" 404:"+state_code_count[1]);
                 stringBuilder.append(" 500:"+state_code_count[2]);
@@ -47,16 +47,16 @@ public class sccReducer extends Reducer<Text, IntWritable, TimeStampWritable, Nu
             case 404: state_code_count[1] += sum;
             case 500: state_code_count[2] += sum;
         }
-        current_time = key.toString();
+        current_time = time.toString();
     }
 
     @Override
     public void cleanup(Context context) throws IOException, InterruptedException {
         StringBuilder stringBuilder = new StringBuilder();
-        if (!current_time.equals("_")){
-            stringBuilder.append(" 200:"+state_code_count[0]);
-            stringBuilder.append(" 404:"+state_code_count[1]);
-            stringBuilder.append(" 500:"+state_code_count[2]);
+        if (!current_time.equals("$")){
+            stringBuilder.append("200:"+state_code_count[0]);
+            stringBuilder.append("404:"+state_code_count[1]);
+            stringBuilder.append("500:"+state_code_count[2]);
             context.write(new TimeStampWritable(stringBuilder.toString(), Integer.parseInt(current_time)), NullWritable.get());
         }
         else{
