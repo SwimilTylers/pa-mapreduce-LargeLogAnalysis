@@ -27,9 +27,9 @@ public class sccReducer extends Reducer<Text, IntWritable, TimeStampWritable, Nu
                 context.write(new TimeStampWritable(stringBuilder.toString(), Integer.parseInt(current_time)), NullWritable.get());
             }
             else{
-                stringBuilder.append(" 200:"+state_code_count[0]+'\n');
-                stringBuilder.append(" 404:"+state_code_count[1]+'\n');
-                stringBuilder.append(" 500:"+state_code_count[2]);
+                stringBuilder.append("200:"+state_code_count[0]+'\n');
+                stringBuilder.append("404:"+state_code_count[1]+'\n');
+                stringBuilder.append("500:"+state_code_count[2]);
                 context.write(new TimeStampWritable(stringBuilder.toString()), NullWritable.get());
             }
 
@@ -54,15 +54,15 @@ public class sccReducer extends Reducer<Text, IntWritable, TimeStampWritable, Nu
     public void cleanup(Context context) throws IOException, InterruptedException {
         StringBuilder stringBuilder = new StringBuilder();
         if (!current_time.equals("$")){
-            stringBuilder.append("200:"+state_code_count[0]);
-            stringBuilder.append("404:"+state_code_count[1]);
-            stringBuilder.append("500:"+state_code_count[2]);
+            stringBuilder.append(" 200:"+state_code_count[0]);
+            stringBuilder.append(" 404:"+state_code_count[1]);
+            stringBuilder.append(" 500:"+state_code_count[2]);
             context.write(new TimeStampWritable(stringBuilder.toString(), Integer.parseInt(current_time)), NullWritable.get());
         }
         else{
-            stringBuilder.append(" 200:"+state_code_count[0]+'\n');
-            stringBuilder.append(" 404:"+state_code_count[1]+'\n');
-            stringBuilder.append(" 500:"+state_code_count[2]);
+            stringBuilder.append("200:"+state_code_count[0]+'\n');
+            stringBuilder.append("404:"+state_code_count[1]+'\n');
+            stringBuilder.append("500:"+state_code_count[2]);
             context.write(new TimeStampWritable(stringBuilder.toString()), NullWritable.get());
         }
     }
