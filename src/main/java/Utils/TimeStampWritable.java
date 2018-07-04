@@ -1,5 +1,6 @@
-package StateCodeCounter;
+package Utils;
 
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.WritableComparable;
 
 import java.io.DataInput;
@@ -10,6 +11,10 @@ public class TimeStampWritable implements WritableComparable<TimeStampWritable> 
     private boolean is_statistics;
     private int start_time;
     private String mark;
+
+    public TimeStampWritable(){
+
+    }
 
     public TimeStampWritable(String info, int time){
         is_statistics = false;

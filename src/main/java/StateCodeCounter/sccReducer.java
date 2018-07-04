@@ -1,5 +1,6 @@
 package StateCodeCounter;
 
+import Utils.TimeStampWritable;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
@@ -33,7 +34,7 @@ public class sccReducer extends Reducer<Text, IntWritable, TimeStampWritable, Nu
             }
 
 
-            state_code_count = new int[3];
+            state_code_count = new int[]{0,0,0};
         }
 
         int sum = 0;

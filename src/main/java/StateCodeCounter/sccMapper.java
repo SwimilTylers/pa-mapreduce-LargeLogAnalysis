@@ -1,5 +1,6 @@
 package StateCodeCounter;
 
+import Utils.LogEntryParser;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -8,17 +9,15 @@ import org.apache.hadoop.mapreduce.Mapper;
 import java.io.IOException;
 
 public class sccMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
-    final IntWritable one = new IntWritable(1);
+    private final IntWritable one = new IntWritable(1);
+    private LogEntryParser parser = null;
 
     @Override
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-        String[] entrySplit = value.toString().split(" ");
+        parser = new LogEntryParser(value.toString());
+        String time = String.format("%02d", parser.getTimeSplits()[0]);
 
-        String time = entrySplit[1];
-        int start_idx = time.indexOf(':') + 1;
-        time = time.substring(start_idx, time.indexOf(':', start_idx));
-
-        String stateCode = entrySplit[4];
+        int stateCode = parser.getState_code();
 
         context.write(new Text(time+"#"+stateCode), one);
         context.write(new Text("_#"+stateCode), one);

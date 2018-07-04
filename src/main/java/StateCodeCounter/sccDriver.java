@@ -1,5 +1,6 @@
 package StateCodeCounter;
 
+import Utils.TimeStampWritable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 
