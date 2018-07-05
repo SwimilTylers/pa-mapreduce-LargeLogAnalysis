@@ -56,9 +56,7 @@ public class InvertedIndexer {
         }
     }
 
-    /*
-        将key值相同的项合并，减少网络开销
-     */
+    
     public static class SumCombiner extends Reducer<Text,IntWritable,Text,IntWritable>{
         @Override
         public void reduce(Text key, Iterable<IntWritable> values,Context context) throws IOException, InterruptedException{
@@ -70,9 +68,7 @@ public class InvertedIndexer {
         }
     }
 
-    /*
-        以 word 为关键字进行划分
-     */
+   
     public static class InvertedIndexerPartitioner extends HashPartitioner<Text, IntWritable> {
         @Override
         public int getPartition(Text key, IntWritable value, int numPartitions){
