@@ -1,5 +1,6 @@
 package StateCodeCounter;
 
+import Utils.CustomFileNameTextOutputFormat;
 import Utils.TimeStampWritable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -33,6 +34,7 @@ public class sccDriver extends Configured implements Tool {
         job.setOutputValueClass(NullWritable.class);
 
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
+        job.setOutputFormatClass(TaskOneTextOutput.class);
         return job.waitForCompletion(true) ? 0 : 1;
     }
 
