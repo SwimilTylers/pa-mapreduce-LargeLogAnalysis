@@ -40,8 +40,8 @@ public class uvcReducer extends Reducer<Text, IntWritable, TimeStampWritable, Nu
                 int second = Integer.parseInt(times[2]);
 
                 int[] start_time = new int[]{hour, minute, second};
-                ++second;
-                if (second + 1 >= 60) {
+                second++;
+                if (second >= 60) {
                     minute++;
                     second = 0;
                 }

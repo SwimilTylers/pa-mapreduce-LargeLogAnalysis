@@ -1,5 +1,6 @@
 package UrlVisitorCounter;
 
+import Utils.CustomizedFileNameTextOutputFormat;
 import Utils.TimeStampWritable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -11,7 +12,6 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.LazyOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 
 public class uvcDriver extends Configured implements Tool {
@@ -35,7 +35,8 @@ public class uvcDriver extends Configured implements Tool {
         job.setOutputValueClass(NullWritable.class);
 
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
-        LazyOutputFormat.setOutputFormatClass(job, TextOutputFormat.class);
+        LazyOutputFormat.setOutputFormatClass(job, CustomizedFileNameTextOutputFormat.class);
+
         return job.waitForCompletion(true) ? 0 : 1;
     }
 
