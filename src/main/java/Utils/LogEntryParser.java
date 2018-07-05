@@ -44,7 +44,7 @@ public class LogEntryParser {
             try {
                 response_length = Integer.parseInt(buf[buf_length-2]);
             }catch (NumberFormatException e){
-                response_length = 0;
+                response_length = -1;
             }
             delay = Integer.parseInt(buf[buf_length-1]);
         }

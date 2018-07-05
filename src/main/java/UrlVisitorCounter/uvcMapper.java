@@ -14,13 +14,17 @@ public class uvcMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
 
     @Override
     public void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
-        parser = new LogEntryParser(value.toString());
-        String request = parser.getHttp_request();
-        String url = request.split(" ")[1];
-        int[] time = parser.getTimeSplits();
-        String stime = String.format("%02d:%02d:%02d", time[0], time[1], time[2]);
+        try {
+            parser = new LogEntryParser(value.toString());
+            String request = parser.getHttp_request();
+            String url = request.split(" ")[1];
+            int[] time = parser.getTimeSplits();
+            String stime = String.format("%02d:%02d:%02d", time[0], time[1], time[2]);
 
-        context.write(new Text(url+"#"+stime), one);
-        context.write(new Text("$#"+stime), one);
+            context.write(new Text(url + "#" + stime), one);
+            context.write(new Text(url + "#$"), one);
+        }catch (ArrayIndexOutOfBoundsException e){
+
+        }
     }
 }
