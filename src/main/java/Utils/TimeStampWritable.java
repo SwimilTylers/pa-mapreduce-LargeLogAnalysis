@@ -6,6 +6,8 @@ import org.apache.hadoop.io.WritableComparable;
 import java.io.DataInput;
 import java.io.DataOutput;
 import java.io.IOException;
+import java.util.Random;
+import java.util.Scanner;
 
 public class TimeStampWritable implements WritableComparable<TimeStampWritable> {
     private boolean is_statistics;
@@ -84,8 +86,40 @@ public class TimeStampWritable implements WritableComparable<TimeStampWritable> 
         if (is_statistics)
             return mark;
         else
-            return String.format("%02d:00:00-%02d:00:00",
-                    start_time[0], start_time[0]+1
+            return String.format("%02d:%02d:%02d-%02d:%02d:%02d",
+                    start_time[0], start_time[1], start_time[2],
+                    end_time[0], end_time[1], end_time[2]
             ) + mark;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("line: ");
+        while (scanner.hasNext()){
+            String time = scanner.nextLine();
+            if (time.equals("$"))
+                break;
+            String[] times = time.split(":");
+            int hour = Integer.parseInt(times[0]);
+            int minute = Integer.parseInt(times[1]);
+            int second = Integer.parseInt(times[2]);
+
+            int[] start_time = new int[]{hour, minute, second};
+            second++;
+            if (second >= 60) {
+                minute++;
+                second = 0;
+            }
+            if (minute >= 60) {
+                hour++;
+                minute = 0;
+            }
+            hour = hour >= 24 ? 0 : hour;
+            int[] end_time = new int[]{hour, minute, second};
+
+            TimeStampWritable tsw = new TimeStampWritable(" "+ new Random().nextInt(), start_time, end_time);
+            System.out.println(tsw);
+            System.out.print("line: ");
+        }
     }
 }

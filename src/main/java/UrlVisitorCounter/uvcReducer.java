@@ -28,30 +28,38 @@ public class uvcReducer extends Reducer<Text, IntWritable, TimeStampWritable, Nu
             sum += value.get();
         }
 
-        if (time.equals("$")){
-            TimeStampWritable tsw = new TimeStampWritable(url+": "+sum);
-            mos.write(tsw, NullWritable.get(), url.replace("/", "-"));
-        }
-        else{
-            String[] times = time.split(":");
-            int hour = Integer.parseInt(times[0]);
-            int minute = Integer.parseInt(times[1]);
-            int second = Integer.parseInt(times[2]);
-
-            int[] start_time = new int[]{hour, minute, second};
-            if (second + 1 >= 60) {
-                minute++;
-                second = 0;
+        if (!url.equals("null")){
+            if (time.equals("$")){
+                TimeStampWritable tsw = new TimeStampWritable(url+": "+sum);
+                mos.write(tsw, NullWritable.get(), url.substring(1).replace("/", "-"));
             }
-            if (minute >= 60) {
-                hour++;
-                minute = 0;
-            }
-            hour = hour >= 24 ? 0 : hour;
-            int[] end_time = new int[]{hour, minute, second};
+            else{
+                String[] times = time.split(":");
+                int hour = Integer.parseInt(times[0]);
+                int minute = Integer.parseInt(times[1]);
+                int second = Integer.parseInt(times[2]);
 
-            TimeStampWritable tsw = new TimeStampWritable(" "+sum, start_time, end_time);
-            mos.write(tsw, NullWritable.get(), url.replace("/", "-"));
+                int[] start_time = new int[]{hour, minute, second};
+                ++second;
+                if (second + 1 >= 60) {
+                    minute++;
+                    second = 0;
+                }
+                if (minute >= 60) {
+                    hour++;
+                    minute = 0;
+                }
+                hour = hour >= 24 ? 0 : hour;
+                int[] end_time = new int[]{hour, minute, second};
+
+                TimeStampWritable tsw = new TimeStampWritable(" "+sum, start_time, end_time);
+                mos.write(tsw, NullWritable.get(), url.substring(1).replace("/", "-"));
+            }
         }
+    }
+
+    @Override
+    protected void cleanup(Context context) throws IOException, InterruptedException {
+        mos.close();
     }
 }

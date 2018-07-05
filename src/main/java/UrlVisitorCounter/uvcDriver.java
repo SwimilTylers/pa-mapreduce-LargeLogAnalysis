@@ -38,4 +38,9 @@ public class uvcDriver extends Configured implements Tool {
         LazyOutputFormat.setOutputFormatClass(job, TextOutputFormat.class);
         return job.waitForCompletion(true) ? 0 : 1;
     }
+
+    public static void main(String[] args) throws Exception {
+        uvcDriver driver = new uvcDriver();
+        System.exit(driver.run(args));
+    }
 }

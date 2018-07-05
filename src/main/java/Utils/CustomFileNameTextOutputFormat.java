@@ -19,7 +19,7 @@ import org.apache.hadoop.util.ReflectionUtils;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-abstract public class CustomFileNameTextOutputFormat<K extends WritableComparable<K>,V extends Writable> extends TextOutputFormat<K, V> {
+abstract public class CustomFileNameTextOutputFormat<K,V> extends TextOutputFormat<K, V> {
     abstract protected String getFileName(TaskAttemptContext job);
 
     @Override

@@ -3,7 +3,7 @@ package StateCodeCounter;
 import Utils.CustomFileNameTextOutputFormat;
 import org.apache.hadoop.mapreduce.TaskAttemptContext;
 
-public class TaskOneTextOutput extends CustomFileNameTextOutputFormat {
+public class sccTextOutput extends CustomFileNameTextOutputFormat {
 
     @Override
     protected String getFileName(TaskAttemptContext job) {
