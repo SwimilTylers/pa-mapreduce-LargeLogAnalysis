@@ -1,7 +1,5 @@
 package Utils;
 
-import com.sun.istack.NotNull;
-
 import java.util.Scanner;
 
 public class LogEntryParser {
@@ -62,10 +60,15 @@ public class LogEntryParser {
         return time_splits;
     }
 
+    public String getIp() {
+        return  ip;
+    }
     public int getState_code() {
         return state_code;
     }
-
+    public int getDelay(){
+        return delay;
+    }
     public String getHttp_request() {
         return http_request;
     }
