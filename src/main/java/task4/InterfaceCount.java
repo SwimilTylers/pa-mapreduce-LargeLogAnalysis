@@ -23,6 +23,9 @@ import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import org.apache.hadoop.mapreduce.lib.output.LazyOutputFormat;
 
 public class InterfaceCount {
+    /*
+        map使用LogEntryParser解析每一条log信息，并把端口+time作为key传递参数，值为响应时间delay
+     */
     public static class InterfaceCountMapper extends Mapper<Object,Text,Text,IntWritable> {
         private final static IntWritable one = new IntWritable(1);
         private LogEntryParser parser=null;
@@ -34,7 +37,7 @@ public class InterfaceCount {
 
             String http_req=parser.getHttp_request();
             http_req=http_req.split(" ")[1];
-
+            
             int delay=parser.getDelay();
 
             context.write(new Text(http_req+"#"+time),new IntWritable(delay));
@@ -43,7 +46,7 @@ public class InterfaceCount {
     }
 
     /*
-        dont add up,
+       不需要combiner
      */
     /*
     public static class InterfaceCountCombiner extends Reducer<Text,IntWritable,Text,IntWritable>{
@@ -60,6 +63,9 @@ public class InterfaceCount {
 
    */
 
+    /*
+     自定义Partitioner，把key中相同的端口分配到同一个reducer节点
+     */
     public static class InterfaceCountPartitioner extends HashPartitioner<Text, IntWritable> {
         @Override
         public int getPartition(Text key, IntWritable value, int numPartitions){
@@ -70,10 +76,7 @@ public class InterfaceCount {
     }
 
     public static class InterfaceCountReducer extends Reducer<Text, IntWritable, Text, NullWritable>{
-        /*
-              static String currentWord =" ";
-              static List<String> fileInfoList = new ArrayList<String>();
-      */
+         //通过MultipleOutputs实现多文件输出，
         private  MultipleOutputs <Text, NullWritable> multipleOutputs;
         @Override
         protected void setup(Context context) throws IOException ,InterruptedException
@@ -85,6 +88,12 @@ public class InterfaceCount {
         static String temp=" ";
         static List<String> timeInfoList = new ArrayList<String>();
 
+        /*
+         timeinfolist数组存储同一端口，不同时间段的delay平均值，一个时间段的信息为一个元素。
+         reduce之前会自动排序，按照时间递增。
+         为了统计总平均值，数组中还需添加一些信息。
+         当同一端口的数据全部统计后，把数组元素中信息提取，并在此循环中统计出现总数，然后舍去和输出无关的信息，全部添加到一个字符串中。
+         */
         public void reduce(Text key, Iterable<IntWritable> values, Context context)
                 throws IOException, InterruptedException {
             String URL=key.toString().split("#")[0];
