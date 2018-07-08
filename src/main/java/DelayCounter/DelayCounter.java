@@ -1,4 +1,4 @@
-package com.task4;
+package DelayCounter;
 
 import Utils.CustomizedFileNameTextOutputFormat;
 import Utils.LogEntryParser;
@@ -22,7 +22,7 @@ import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import org.apache.hadoop.mapreduce.lib.output.LazyOutputFormat;
 
-public class InterfaceCount {
+public class DelayCounter {
     /*
         map使用LogEntryParser解析每一条log信息，并把端口+time作为key传递参数，值为响应时间delay
      */
@@ -183,10 +183,10 @@ public class InterfaceCount {
     }
 
 
-    public static void main(String[] args) throws Exception{
+    public static int run(String[] args) throws Exception{
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf,"figure log");
-        job.setJarByClass(InterfaceCount.class);
+        job.setJarByClass(DelayCounter.class);
         job.setInputFormatClass(TextInputFormat.class);
 
         LazyOutputFormat.setOutputFormatClass(job, CustomizedFileNameTextOutputFormat.class);
@@ -203,6 +203,11 @@ public class InterfaceCount {
         job.setOutputValueClass(Text.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
-        System.exit(job.waitForCompletion(true) ? 0 : 1);
+        return job.waitForCompletion(true) ? 0 : 1;
+    }
+
+    public static void main(String[] args) throws Exception{
+       DelayCounter driver =new DelayCounter();
+       System.exit(driver.run(args));
     }
 }

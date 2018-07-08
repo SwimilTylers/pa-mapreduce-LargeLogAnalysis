@@ -1,4 +1,4 @@
-package task2;
+package IPCounter;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
@@ -19,7 +19,6 @@ import java.util.List;
 
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import org.apache.hadoop.mapreduce.lib.output.LazyOutputFormat;
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import Utils.LogEntryParser;
 import Utils.CustomizedFileNameTextOutputFormat;
 
@@ -142,8 +141,7 @@ public class IPCounter {
         }
     }
 
-
-    public static void main(String[] args) throws Exception{
+    public static int run(String[] args) throws Exception{
         Configuration conf = new Configuration();
         Job job = Job.getInstance(conf,"figure log");
         job.setJarByClass(IPCounter.class);
@@ -162,6 +160,11 @@ public class IPCounter {
         job.setOutputValueClass(Text.class);
         FileInputFormat.addInputPath(job, new Path(args[0]));
         FileOutputFormat.setOutputPath(job, new Path(args[1]));
-        System.exit(job.waitForCompletion(true) ? 0 : 1);
+        return job.waitForCompletion(true) ? 0 : 1;
+
+    }
+    public static void main(String[] args) throws Exception{
+        IPCounter driver=new IPCounter();
+        System.exit(driver.run(args));
     }
 }
