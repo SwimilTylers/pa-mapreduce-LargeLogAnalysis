@@ -185,7 +185,7 @@ public class DelayCounter {
 
     public static int run(String[] args) throws Exception{
         Configuration conf = new Configuration();
-        Job job = Job.getInstance(conf,"figure log");
+        Job job = Job.getInstance(conf,"Expected Delay Counter");
         job.setJarByClass(DelayCounter.class);
         job.setInputFormatClass(TextInputFormat.class);
 

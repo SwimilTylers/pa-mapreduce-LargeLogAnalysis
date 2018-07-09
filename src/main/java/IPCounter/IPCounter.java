@@ -143,7 +143,7 @@ public class IPCounter {
 
     public static int run(String[] args) throws Exception{
         Configuration conf = new Configuration();
-        Job job = Job.getInstance(conf,"figure log");
+        Job job = Job.getInstance(conf,"IP Visitor Counter");
         job.setJarByClass(IPCounter.class);
         job.setInputFormatClass(TextInputFormat.class);
         LazyOutputFormat.setOutputFormatClass(job,CustomizedFileNameTextOutputFormat.class);

@@ -30,7 +30,7 @@ public class uvcReducer extends Reducer<Text, IntWritable, TimeStampWritable, Nu
 
         if (!url.equals("null")){
             if (time.equals("$")){
-                TimeStampWritable tsw = new TimeStampWritable(url+": "+sum);
+                TimeStampWritable tsw = new TimeStampWritable(""+sum);
                 mos.write(tsw, NullWritable.get(), url.substring(1).replace("/", "-"));
             }
             else{
