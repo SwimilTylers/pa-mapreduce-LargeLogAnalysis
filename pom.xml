@@ -4,14 +4,28 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>2018st25</groupId>
-    <artifactId>LogStatisticsAnalysis</artifactId>
+    <groupId>Loganalysis4</groupId>
+    <artifactId>Loganalysis4</artifactId>
     <version>1.1.0</version>
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+
+                        <configuration>
+                            <transformers>
+                                <transformer>
+                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>MainDriver.MainDriver.main</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
                 <configuration>
                     <source>7</source>
                     <target>7</target>
