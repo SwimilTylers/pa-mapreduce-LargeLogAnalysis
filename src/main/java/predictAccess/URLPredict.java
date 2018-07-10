@@ -200,7 +200,7 @@ public class URLPredict {
             int a00=0,a01=0,a11=0;
             int y0=0,y1=0;
 
-            for(int i=13;i>=10;i--){
+            for(int i=13;i>=0;i--){
                 if(timesOfDate[i]==0) continue;
                 a00+=1;
                 a01+=i;
@@ -225,8 +225,10 @@ public class URLPredict {
                 b = (a01 * y0 - a00 * y1) / (a01 * a01 - a00 * a11);
                 a = (y0 - a01 * b) / a00;
             }
-            b=0;a=timesOfDate[13];
-            return (int)(14*b+a);
+         //   b=0;a=timesOfDate[14];
+            int ans = (int)(14*b+a);
+            if(ans<0) ans =0;
+            return ans;
         }
     }
 

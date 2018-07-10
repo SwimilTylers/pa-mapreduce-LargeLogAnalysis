@@ -72,6 +72,7 @@ public class Main {
         job.setPartitionerClass(URLPredict.myPartitioner.class);
         job.setReducerClass(URLPredict.myReducer.class);
 
+
         job.setMapOutputValueClass(Text.class);
         job.setMapOutputKeyClass(Text.class);
         job.setOutputKeyClass(Text.class);
@@ -81,6 +82,14 @@ public class Main {
         FileInputFormat.setInputPaths(job,inputPath);
         FileOutputFormat.setOutputPath(job,new Path(outputPath));
         return job.waitForCompletion(true);
+
+/*
+        Configuration conf = new Configuration();
+        Job job = Job.getInstance(conf,"URL Predict");
+        FileInputFormat.setInputPaths(job,inputPath);
+        FileOutputFormat.setOutputPath(job,new Path(outputPath));
+  */
+
     }
 
     private static boolean runURLPredictBySingleFile(String inputPath,String outputPath) throws Exception{
@@ -93,10 +102,20 @@ public class Main {
         return runURLPredict(inputPaths,outputPath);
     }
 
+    private static void updateFileStructure(String inputPath, String outputPath)throws Exception{
+        Common.rumCmd("hdfs dfs -mkdir "+outputPath);
+        for(int i=8;i<=22;i++){
+            String date = String.format("%02d",i);
+            Common.rumCmd("hdfs dfs -cp "+inputPath+"/"+date+"/* "+outputPath);
+        }
+    }
+
     public static void main(String[] args)throws Exception{
-     //   runURLCounter(args[0],args[1]);
-     //   runURLCounterBySingleFile(args[0],args[1]+"URLCounter");
-    //   runURLPredict(args[1]+"URLCounter",args[1]);
-       runURLPredict(args[0],args[1]);
+        runURLCounter(args[0],"urlCounter");
+        runURLPredict("urlCounter",args[1]);
+
+      //  runURLCounterBySingleFile(args[0],args[1]+"URLCounter");
+     //   updateFileStructure(args[1]+"URLCounter","urlCounter");
+     //   runURLPredict("urlCounter",args[1]);
     }
 }

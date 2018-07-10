@@ -3,7 +3,9 @@ package predictAccess;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +52,16 @@ public class Common {
         }
         fs.close();
         return ans;
+    }
+
+    protected static void rumCmd(String cmd)throws Exception{
+        Process process = Runtime.getRuntime().exec(cmd);
+        System.out.println(cmd);
+        BufferedReader strCon = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        String line;
+        while ((line=strCon.readLine())!=null){
+            System.out.println(line);
+        }
     }
 
 }
