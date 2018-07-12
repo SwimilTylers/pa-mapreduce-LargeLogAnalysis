@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>Loganalysis4</groupId>
-    <artifactId>Loganalysis4</artifactId>
-    <version>1.1.0</version>
+    <groupId>2018st25</groupId>
+    <artifactId>LogStatisticsAnalysis</artifactId>
+    <version>1.1.2</version>
     <build>
         <plugins>
             <plugin>
@@ -15,7 +15,6 @@
                 <executions>
                     <execution>
                         <phase>package</phase>
-
                         <configuration>
                             <transformers>
                                 <transformer>
