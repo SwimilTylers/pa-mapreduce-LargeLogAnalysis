@@ -23,8 +23,6 @@ public class sccMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
             context.write(new Text(time + "#" + stateCode), one);
             context.write(new Text("$#" + stateCode), one);
 
-        }catch (ArrayIndexOutOfBoundsException e){
-
-        }
+        }catch (ArrayIndexOutOfBoundsException | StringIndexOutOfBoundsException ignored){}
     }
 }
