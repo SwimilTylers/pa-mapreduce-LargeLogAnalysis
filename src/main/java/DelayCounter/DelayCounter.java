@@ -31,16 +31,18 @@ public class DelayCounter {
         private LogEntryParser parser=null;
         @Override
         public void map(Object key, Text value, Context context) throws IOException,InterruptedException{
-            parser=new LogEntryParser(value.toString());
+            try {
+                parser = new LogEntryParser(value.toString());
 
-            String time=String.format("%02d",parser.getTimeSplits()[0]);
+                String time = String.format("%02d", parser.getTimeSplits()[0]);
 
-            String http_req=parser.getHttp_request();
-            http_req=http_req.split(" ")[1];
-            
-            int delay=parser.getDelay();
+                String http_req = parser.getHttp_request();
+                http_req = http_req.split(" ")[1];
 
-            context.write(new Text(http_req+"#"+time),new IntWritable(delay));
+                int delay = parser.getDelay();
+
+                context.write(new Text(http_req + "#" + time), new IntWritable(delay));
+            }catch (ArrayIndexOutOfBoundsException | StringIndexOutOfBoundsException ignored){}
 
         }
     }

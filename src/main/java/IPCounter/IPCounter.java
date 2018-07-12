@@ -31,11 +31,13 @@ public class IPCounter {
         private LogEntryParser parser=null;
         @Override
         public void map(Object key, Text value, Context context) throws IOException,InterruptedException{
-            parser=new LogEntryParser(value.toString());
-            String time=String.format("%02d",parser.getTimeSplits()[0]);
-            //time只取hours
-            String IP=parser.getIp();
-            context.write(new Text(IP+"#"+time),one);
+            try {
+                parser = new LogEntryParser(value.toString());
+                String time = String.format("%02d", parser.getTimeSplits()[0]);
+                //time只取hours
+                String IP = parser.getIp();
+                context.write(new Text(IP + "#" + time), one);
+            }catch (ArrayIndexOutOfBoundsException | StringIndexOutOfBoundsException ignored){}
             
         }
     }

@@ -1,9 +1,8 @@
-package MainDriver;
 import DelayCounter.DelayCounter;
 import IPCounter.IPCounter;
 import StateCodeCounter.sccDriver;
 import UrlVisitorCounter.uvcDriver;
-public class MainDriver {
+public class Main {
     public static void main(String[] args) throws Exception{
         String []args1=new String[2];
         String []args2=new String[2];
