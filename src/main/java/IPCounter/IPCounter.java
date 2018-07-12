@@ -95,7 +95,7 @@ public class IPCounter {
             String time = key.toString().split("#")[1];
             int tp=Integer.parseInt(time);
             int tp2=tp+1;
-            time=String.valueOf(tp)+":00-"+String.valueOf(tp2)+":00";
+                    time=String.valueOf(tp)+":00:00-"+String.valueOf(tp2)+":00:00";
             for (IntWritable val : values) {
                 sumoftotalkey += val.get();
             }
