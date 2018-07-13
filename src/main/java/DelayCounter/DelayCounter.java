@@ -2,6 +2,7 @@ package DelayCounter;
 
 import Utils.CustomizedFileNameTextOutputFormat;
 import Utils.LogEntryParser;
+import Utils.TimeStampWritable;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
@@ -37,11 +38,12 @@ public class DelayCounter {
                 String time = String.format("%02d", parser.getTimeSplits()[0]);
 
                 String http_req = parser.getHttp_request();
-                http_req = http_req.split(" ")[1];
+                String url = http_req.split(" ")[1];
 
                 int delay = parser.getDelay();
 
-                context.write(new Text(http_req + "#" + time), new IntWritable(delay));
+                context.write(new Text(url + "#" + time), new IntWritable(delay));
+                context.write(new Text(url + "#$"), new IntWritable(delay));
             }catch (ArrayIndexOutOfBoundsException | StringIndexOutOfBoundsException ignored){}
 
         }
@@ -79,11 +81,11 @@ public class DelayCounter {
 
     public static class InterfaceCountReducer extends Reducer<Text, IntWritable, Text, NullWritable>{
          //通过MultipleOutputs实现多文件输出，
-        private  MultipleOutputs <Text, NullWritable> multipleOutputs;
+        private  MultipleOutputs <Text, NullWritable> mos;
         @Override
         protected void setup(Context context) throws IOException ,InterruptedException
         {
-            multipleOutputs = new MultipleOutputs< Text, NullWritable>(context);
+            mos = new MultipleOutputs< Text, NullWritable>(context);
         }
 
         static String currentURL =" ";
@@ -101,9 +103,11 @@ public class DelayCounter {
             String URL=key.toString().split("#")[0];
             String time = key.toString().split("#")[1];
             //time fix
+
             int tp=Integer.parseInt(time);
             int tp2=tp+1;
             time=String.valueOf(tp)+":00-"+String.valueOf(tp2)+":00";
+
             //url fix
             URL=URL.replace("/","-");
             if(URL.substring(0,1).equals("-"))
@@ -116,11 +120,26 @@ public class DelayCounter {
                 number+=1;
             }
             double  average=sumofkey/(double)number;
+            String str_average=String.format("%.3f",average);
+            //begin
+/*
+            if (!URL.equals("null")){
+                if (time.equals("$")){
+                    TimeStampWritable tsw = new TimeStampWritable(str_average);
+                    mos.write(tsw, NullWritable.get(), URL);
+                }
+                else{
+                    int hour=Integer.parseInt(time);
+                    int[] start_time = new int[]{hour, 0 ,0};
+                    int[] end_time = new int[]{hour+1, 0 ,0};
+                    TimeStampWritable tsw = new TimeStampWritable(" "+str_average, start_time, end_time);
+                    mos.write(tsw, NullWritable.get(),URL);
+                }
+            }*/
+            //end
+
             String oneaverage=String.format("%.3f",average);
-            //
-
             temp=time+" "+oneaverage+"$"+sumofkey+"|"+number+"#";
-
             if(!currentURL.equals(URL) && !currentURL.equals(" "))
             {
                 StringBuilder out=new StringBuilder();
@@ -145,7 +164,7 @@ public class DelayCounter {
                 if(sumofall>0) {
                     //   context.write(new Text(currentURL),new Text(out.toString()));
                     //context.write(new Text(currentURL +"/n" +out.toString()), NullWritable.get());
-                    multipleOutputs.write(new Text(out.toString()),NullWritable.get(),currentURL);
+                    mos.write(new Text(out.toString()),NullWritable.get(),currentURL);
                 }
                 timeInfoList=new ArrayList<String>();
             }
@@ -178,9 +197,10 @@ public class DelayCounter {
             if(sumofall>0) {
                 //   context.write(new Text(currentURL),new Text(out.toString()));
                 //context.write(new Text(currentURL +"/n" +out.toString()), NullWritable.get());
-                multipleOutputs.write(new Text(out.toString()),NullWritable.get(),currentURL);
+                mos.write(new Text(out.toString()),NullWritable.get(),currentURL);
             }
-            multipleOutputs.close();
+
+            mos.close();
         }
     }
 
