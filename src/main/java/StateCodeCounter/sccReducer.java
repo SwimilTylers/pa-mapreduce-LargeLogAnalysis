@@ -45,9 +45,9 @@ public class sccReducer extends Reducer<Text, IntWritable, TimeStampWritable, Nu
         }
 
         switch (stateCode){
-            case 200: state_code_count[0] += sum;
-            case 404: state_code_count[1] += sum;
-            case 500: state_code_count[2] += sum;
+            case 200: state_code_count[0] += sum;   break;
+            case 404: state_code_count[1] += sum;   break;
+            case 500: state_code_count[2] += sum;   break;
         }
         current_time = time.toString();
     }
