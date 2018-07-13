@@ -79,19 +79,19 @@ public class DelayCounter {
 
     }
 
-    public static class InterfaceCountReducer extends Reducer<Text, IntWritable, TimeStampWritable, NullWritable>{
+    public static class InterfaceCountReducer extends Reducer<Text, IntWritable, Text, NullWritable>{
          //通过MultipleOutputs实现多文件输出，
-        private  MultipleOutputs <TimeStampWritable, NullWritable> mos;
+        private  MultipleOutputs <Text, NullWritable> mos;
         @Override
         protected void setup(Context context) throws IOException ,InterruptedException
         {
-            mos = new MultipleOutputs< TimeStampWritable, NullWritable>(context);
+            mos = new MultipleOutputs< Text, NullWritable>(context);
         }
-/*
+
         static String currentURL =" ";
         static String temp=" ";
         static List<String> timeInfoList = new ArrayList<String>();
-*/
+
         /*
          timeinfolist数组存储同一端口，不同时间段的delay平均值，一个时间段的信息为一个元素。
          reduce之前会自动排序，按照时间递增。
@@ -103,11 +103,11 @@ public class DelayCounter {
             String URL=key.toString().split("#")[0];
             String time = key.toString().split("#")[1];
             //time fix
-            /*
+
             int tp=Integer.parseInt(time);
             int tp2=tp+1;
             time=String.valueOf(tp)+":00-"+String.valueOf(tp2)+":00";
-            */
+
             //url fix
             URL=URL.replace("/","-");
             if(URL.substring(0,1).equals("-"))
@@ -122,7 +122,7 @@ public class DelayCounter {
             double  average=sumofkey/(double)number;
             String str_average=String.format("%.3f",average);
             //begin
-
+/*
             if (!URL.equals("null")){
                 if (time.equals("$")){
                     TimeStampWritable tsw = new TimeStampWritable(str_average);
@@ -135,9 +135,9 @@ public class DelayCounter {
                     TimeStampWritable tsw = new TimeStampWritable(" "+str_average, start_time, end_time);
                     mos.write(tsw, NullWritable.get(),URL);
                 }
-            }
+            }*/
             //end
-/*
+
             String oneaverage=String.format("%.3f",average);
             temp=time+" "+oneaverage+"$"+sumofkey+"|"+number+"#";
             if(!currentURL.equals(URL) && !currentURL.equals(" "))
@@ -164,17 +164,17 @@ public class DelayCounter {
                 if(sumofall>0) {
                     //   context.write(new Text(currentURL),new Text(out.toString()));
                     //context.write(new Text(currentURL +"/n" +out.toString()), NullWritable.get());
-                    multipleOutputs.write(new Text(out.toString()),NullWritable.get(),currentURL);
+                    mos.write(new Text(out.toString()),NullWritable.get(),currentURL);
                 }
                 timeInfoList=new ArrayList<String>();
             }
             currentURL= URL;
             timeInfoList.add(temp);
-            */
+
         }
 
         public void cleanup(Context context) throws IOException, InterruptedException {
-        /*
+
             StringBuilder out=new StringBuilder();
             long sumofall=0;
             long numberall=0;
@@ -197,9 +197,9 @@ public class DelayCounter {
             if(sumofall>0) {
                 //   context.write(new Text(currentURL),new Text(out.toString()));
                 //context.write(new Text(currentURL +"/n" +out.toString()), NullWritable.get());
-                multipleOutputs.write(new Text(out.toString()),NullWritable.get(),currentURL);
+                mos.write(new Text(out.toString()),NullWritable.get(),currentURL);
             }
-            */
+
             mos.close();
         }
     }
