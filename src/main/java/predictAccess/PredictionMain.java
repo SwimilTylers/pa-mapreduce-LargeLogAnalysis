@@ -14,7 +14,7 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import java.util.List;
 
 
-public class Main {
+public class PredictionMain {
 
     /**
      *
