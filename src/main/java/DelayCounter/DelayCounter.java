@@ -43,7 +43,7 @@ public class DelayCounter {
                 int delay = parser.getDelay();
 
                 context.write(new Text(url + "#" + time), new IntWritable(delay));
-                context.write(new Text(url + "#$"), new IntWritable(delay));
+           //     context.write(new Text(url + "#$"), new IntWritable(delay));
             }catch (ArrayIndexOutOfBoundsException | StringIndexOutOfBoundsException ignored){}
 
         }
