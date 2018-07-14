@@ -1,5 +1,6 @@
 package predictAccess;
 
+import Jama.Matrix;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -63,6 +64,13 @@ public class PredictionMain {
         return successRun;
     }
 
+    /**
+     *
+     * @param inputPath
+     * @param outputPath
+     * @return
+     * @throws Exception
+     */
     private static boolean runURLPredict(String inputPath,String outputPath) throws Exception{
         System.out.println("URL Predict Job");
         Configuration conf = new Configuration();
@@ -78,6 +86,9 @@ public class PredictionMain {
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(Text.class);
 
+        job.setNumReduceTasks(1);
+        job.setInputFormatClass(CombineFileInput.myCombineFileInputFormat.class);
+
     //    FileInputFormat.setInputPaths(job,new Path(inputPath));
         FileInputFormat.setInputPaths(job,inputPath);
         FileOutputFormat.setOutputPath(job,new Path(outputPath));
@@ -92,6 +103,13 @@ public class PredictionMain {
 
     }
 
+    /**
+     *
+     * @param inputPath
+     * @param outputPath
+     * @return
+     * @throws Exception
+     */
     private static boolean runURLPredictBySingleFile(String inputPath,String outputPath) throws Exception{
         String inputPaths = "";
         for(int i=8;i<22;i++){
@@ -102,6 +120,12 @@ public class PredictionMain {
         return runURLPredict(inputPaths,outputPath);
     }
 
+    /**
+     *
+     * @param inputPath
+     * @param outputPath
+     * @throws Exception
+     */
     private static void updateFileStructure(String inputPath, String outputPath)throws Exception{
         Common.rumCmd("hdfs dfs -mkdir "+outputPath);
         for(int i=8;i<=22;i++){
@@ -117,5 +141,6 @@ public class PredictionMain {
       //  runURLCounterBySingleFile(args[0],args[1]+"URLCounter");
      //   updateFileStructure(args[1]+"URLCounter","urlCounter");
      //   runURLPredict("urlCounter",args[1]);
+
     }
 }

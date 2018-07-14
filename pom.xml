@@ -6,7 +6,7 @@
 
     <groupId>2018st25</groupId>
     <artifactId>LogStatisticsAnalysis</artifactId>
-    <version>1.2.0</version>
+    <version>1.0.11</version>
     <build>
         <plugins>
             <plugin>
@@ -25,11 +25,6 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
-                    <archive>
-                        <manifest>
-                            <mainClass>Main</mainClass>
-                        </manifest>
-                    </archive>
                 </configuration>
                 <executions>
                     <execution>
