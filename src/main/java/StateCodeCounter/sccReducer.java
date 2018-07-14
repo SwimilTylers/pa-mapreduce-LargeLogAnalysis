@@ -24,7 +24,9 @@ public class sccReducer extends Reducer<Text, IntWritable, TimeStampWritable, Nu
                 stringBuilder.append(" 200:"+state_code_count[0]);
                 stringBuilder.append(" 404:"+state_code_count[1]);
                 stringBuilder.append(" 500:"+state_code_count[2]);
-                context.write(new TimeStampWritable(stringBuilder.toString(), Integer.parseInt(current_time)), NullWritable.get());
+                int start_hour = Integer.parseInt(current_time);
+                int end_hour = start_hour == 23 ? 0 : start_hour+1;
+                context.write(new TimeStampWritable(stringBuilder.toString(), new int[]{start_hour,0,0}, new int[]{end_hour, 0, 0}), NullWritable.get());
             }
             else{
                 stringBuilder.append("200:"+state_code_count[0]+'\n');
@@ -43,9 +45,9 @@ public class sccReducer extends Reducer<Text, IntWritable, TimeStampWritable, Nu
         }
 
         switch (stateCode){
-            case 200: state_code_count[0] += sum;
-            case 404: state_code_count[1] += sum;
-            case 500: state_code_count[2] += sum;
+            case 200: state_code_count[0] += sum;   break;
+            case 404: state_code_count[1] += sum;   break;
+            case 500: state_code_count[2] += sum;   break;
         }
         current_time = time.toString();
     }
@@ -57,7 +59,9 @@ public class sccReducer extends Reducer<Text, IntWritable, TimeStampWritable, Nu
             stringBuilder.append(" 200:"+state_code_count[0]);
             stringBuilder.append(" 404:"+state_code_count[1]);
             stringBuilder.append(" 500:"+state_code_count[2]);
-            context.write(new TimeStampWritable(stringBuilder.toString(), Integer.parseInt(current_time)), NullWritable.get());
+            int start_hour = Integer.parseInt(current_time);
+            int end_hour = start_hour == 23 ? 0 : start_hour+1;
+            context.write(new TimeStampWritable(stringBuilder.toString(), new int[]{start_hour,0,0}, new int[]{end_hour, 0, 0}), NullWritable.get());
         }
         else{
             stringBuilder.append("200:"+state_code_count[0]+'\n');

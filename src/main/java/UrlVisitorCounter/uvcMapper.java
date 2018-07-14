@@ -23,8 +23,6 @@ public class uvcMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
 
             context.write(new Text(url + "#" + stime), one);
             context.write(new Text(url + "#$"), one);
-        }catch (ArrayIndexOutOfBoundsException e){
-
-        }
+        }catch (ArrayIndexOutOfBoundsException | StringIndexOutOfBoundsException ignored){}
     }
 }
