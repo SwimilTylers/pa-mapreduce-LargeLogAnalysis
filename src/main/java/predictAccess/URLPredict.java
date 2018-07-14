@@ -1,12 +1,10 @@
 package predictAccess;
 
-import Jama.Matrix;
+
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.mapreduce.lib.partition.HashPartitioner;
-import org.apache.xerces.impl.xpath.XPath;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -108,7 +106,13 @@ public class URLPredict {
                 hourNum++;
 
                 String evlString=String.format("%.2f",evl);
-                context.write(new Text(currentHour+"#"+evlString),new Text(out.toString()));
+                Text value;
+                if(currentHour.equals("23")){
+                    value=new Text("23:00-00:00");
+                }else{
+                    value=new Text(currentHour+":00-"+hour+":00");
+                }
+                context.write(value,new Text(out.toString()));
 
                 evl=0;urlNum=0;
                 urlList = new ArrayList<>();
@@ -176,8 +180,13 @@ public class URLPredict {
             hourNum++;
 
             String evlString=String.format("%.2f",evl);
-            context.write(new Text(currentHour+"#"+evlString),new Text(out.toString()));
-
+            Text value;
+            if(currentHour.equals("23")){
+                value=new Text("23:00-00:00");
+            }else{
+                value=new Text(currentHour+":00-"+"00"+":00");
+            }
+            context.write(value,new Text(out.toString()));
             String RMSEString = String.format("%.2f",RMSE/hourNum);
             System.out.println("RMSE: "+RMSEString);
             context.write(new Text("RMSE"),new Text(RMSEString));
@@ -187,47 +196,22 @@ public class URLPredict {
 
         // 根据dateList预测times   date:times;date:times;date:times
         private int predictNext(List<String> dateList){
-            // 最小二乘拟合， y=ax+b
-            int[] timesOfDate = new int[15];
+            //  获取timesOfDate
+            double[] timesOfDate = new double[15];
             for(int i=0;i<15;i++) timesOfDate[i]=0;
 
+            double max = 0;
             for(String datelist:dateList){
                 String[] tmp = datelist.split(":");
                 int date = Integer.parseInt(tmp[0]);
-                timesOfDate[date-8]=Integer.parseInt(tmp[1]);
+                timesOfDate[date-8]=Double.parseDouble(tmp[1]);
+                max = max<timesOfDate[date-8]?timesOfDate[date-8]:max;
             }
 
-            int a00=0,a01=0,a11=0;
-            int y0=0,y1=0;
+         //   for(int i=0;i<15;i++) timesOfDate[i]/=(max/100);
 
-            for(int i=13;i>=0;i--){
-                if(timesOfDate[i]==0) continue;
-                a00+=1;
-                a01+=i;
-                a11+=i*i;
-                y0+=timesOfDate[i];
-                y1+=timesOfDate[i]*i;
-            }
-
-            System.out.println(a00+" "+a01+" "+a11+" "+y0+" "+y1);
-
-          //  double[][] a={{a00,a01},{a01,a11}};
-          //  double[] b = {y0,y1};
-
-           // Matrix A = new Matrix(a);
-           // Matrix B = new Matrix(b);
-
-            double a,b;
-            if((a01*a01-a00*a11)==0|| a00 ==0){
-                b=0;a=timesOfDate[13];
-            }
-            else {
-                b = (a01 * y0 - a00 * y1) / (a01 * a01 - a00 * a11);
-                a = (y0 - a01 * b) / a00;
-            }
-         //   b=0;a=timesOfDate[14];
-            int ans = (int)(14*b+a);
-            if(ans<0) ans =0;
+            int ans = Common.preByLinearFit(timesOfDate);
+          //  int ans = timesOfDate[13];
             return ans;
         }
     }
